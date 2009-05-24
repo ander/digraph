@@ -80,7 +80,7 @@ module Digraph
     end
     
     def write(format='png', target="graph")
-      dot_file = File.join(GRAPH_DIR, 'graph.dot')
+      dot_file = File.join(GRAPH_DIR, "#{target}.dot")
       target_file = File.join(GRAPH_DIR, target+".#{format}")
       File.open(dot_file, 'w') {|f| f << self.to_dot}
       system("dot -T#{format} -o #{target_file} #{dot_file}")
