@@ -1,0 +1,52 @@
+Digraph
+=======
+
+A small lib for generating GraphViz dot digraphs from ruby.
+
+If you want to use a DSL-like definition for a graph, you can try e.g.
+
+graph = Digraph.new do
+  a >> b['color=red'] >> c >> d
+  c >> g
+end
+
+Where 'color=red' is an attribute of the node b. 
+
+Or, you can do it like this:
+
+graph = Digraph::Graph.new
+
+a = graph.add_node('a')
+b = graph.add_node('b')
+b['color=red']
+graph.add_edge(a,b)
+...
+
+-----
+If you need to add attributes to edges, use the E-method
+for wrapping the edge attributes along with the destination node
+
+Digraph.new do
+  a >> E(b, 'style=dotted') >> c
+  c >> E(d['shape=box'], 'label="required"')
+end
+
+or graph.add_edge(c, d, 'label="required"')
+
+You can set the graph attributes with instance variables:
+
+Digraph.new do
+  @size = "4,4"
+end
+
+Or using add_attribute:
+
+graph = Digraph::Graph.new
+graph.add_attribute("size", "4,4")
+
+-----
+Write the graph by calling your graph's write-method. 
+Change Digraph::GRAPH_DIR as needed. See the source.
+
+
+Cheers.
