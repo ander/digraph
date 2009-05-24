@@ -68,8 +68,7 @@ module Digraph
     def add_attribute(att, val); @attributes[att] = val end
 
     def to_dot
-      out = ""
-      out << "digraph G {\n"
+      out = "digraph G {\n"
       @attributes.each {|k,v| out << "  #{k} =\"#{v}\";\n"}
       @edges.each {|e| out << "  #{e.inspect};\n"}
       @nodes.values.each do |n|
