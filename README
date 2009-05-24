@@ -33,6 +33,7 @@ end
 
 or graph.add_edge(c, d, 'label="required"')
 
+-----
 You can set the graph attributes with instance variables:
 
 Digraph.new do
@@ -43,6 +44,13 @@ Or using add_attribute:
 
 graph = Digraph::Graph.new
 graph.add_attribute("size", "4,4")
+
+-----
+You can also give global attributes in a hash
+
+Digraph.new({:node => 'style=filled, fillcolor="#294b76"'}) do
+...
+end
 
 -----
 Write the graph by calling your graph's write-method. 

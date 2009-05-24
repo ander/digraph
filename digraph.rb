@@ -44,10 +44,11 @@ module Digraph
   end
   
   class Graph
-    def initialize
+    def initialize(globals={})
       @nodes = {}
       @edges = []
       @attributes = {}
+      @globals = globals
     end
     
     def add_node(name)
@@ -69,11 +70,12 @@ module Digraph
 
     def to_dot
       out = "digraph G {\n"
+      @globals.each {|k,v| out << "  #{k} [#{v}]\n"}
       @attributes.each {|k,v| out << "  #{k} =\"#{v}\";\n"}
-      @edges.each {|e| out << "  #{e.inspect};\n"}
       @nodes.values.each do |n|
         out << "  #{n.inspect};\n"
       end
+      @edges.each {|e| out << "  #{e.inspect};\n"}
       out << "}\n"
       out
     end
@@ -98,8 +100,8 @@ module Digraph
     end
 
     attr_reader :graph
-    def initialize
-      @graph = Graph.new
+    def initialize(globals={})
+      @graph = Graph.new(globals)
     end
     
     def E(node, atts); E.new(node, atts) end
@@ -120,8 +122,8 @@ module Digraph
     end
   end
   
-  def self.new(&blk)
-    grapher = Grapher.new
+  def self.new(globals={}, &blk)
+    grapher = Grapher.new(globals)
     grapher.instance_eval(&blk) if block_given?
     grapher.transfer_attributes
     grapher.graph
