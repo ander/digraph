@@ -53,6 +53,35 @@ Digraph.new({:node => 'style=filled, fillcolor="#294b76"'}) do
 end
 
 -----
+Subgraphs are also possible:
+
+Digraph.new do
+  
+  subgraph(:cluster0, {:node => 'style=filled,color=white'}) do
+    @style = 'filled'
+    @color = 'lightgrey'
+    a0 >> a1 >> a2 >> a3
+    @label = "process #1"
+  end
+  
+ subgraph(:cluster1, {:node => 'style=filled'}) do
+    b0 >> b1 >> b2 >> b3
+    @label = "process #2"
+    @color = 'blue'
+  end
+  
+  start >> a0
+  start >> b0
+  a1 >> b3
+  b2 >> a3
+  a3 >> a0
+  a3 >> theend
+  b3 >> theend
+  start['shape=Mdiamond']
+  theend['shape=Msquare']
+end
+
+-----
 Write the graph by calling your graph's write-method. 
 Change Digraph::GRAPH_DIR as needed. See the source.
 

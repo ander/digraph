@@ -44,11 +44,15 @@ module Digraph
   end
   
   class Graph
-    def initialize(globals={})
+    attr_reader :name
+    
+    def initialize(name=nil, globals={})
+      @name = name
+      @globals = globals
       @nodes = {}
       @edges = []
       @attributes = {}
-      @globals = globals
+      @subgraphs = []
     end
     
     def add_node(name)
@@ -67,9 +71,11 @@ module Digraph
     end
     
     def add_attribute(att, val); @attributes[att] = val end
-
-    def to_dot
-      out = "digraph G {\n"
+    def add_subgraph(graph); @subgraphs << graph end
+    
+    def to_dot(sub=false)
+      out = sub ? "subgraph #{name} {\n" : "digraph G {\n"
+      @subgraphs.each {|g| out << "\n" + g.to_dot(true) }
       @globals.each {|k,v| out << "  #{k} [#{v}]\n"}
       @attributes.each {|k,v| out << "  #{k} =\"#{v}\";\n"}
       @nodes.values.each do |n|
@@ -100,12 +106,20 @@ module Digraph
     end
 
     attr_reader :graph
-    def initialize(globals={})
-      @graph = Graph.new(globals)
+    
+    def initialize(globals={}, graph_name=nil)
+      @graph = Graph.new(graph_name, globals)
     end
     
     def E(node, atts); E.new(node, atts) end
-
+    
+    def subgraph(name, globals={}, &blk)
+      subgrapher = Grapher.new(globals, name)
+      subgrapher.instance_eval(&blk) if block_given?
+      subgrapher.transfer_attributes
+      @graph.add_subgraph subgrapher.graph
+    end
+    
     def transfer_attributes
       (instance_variables - ["@graph"]).each do |v|
         @graph.add_attribute(v[1..-1], instance_eval(v))
